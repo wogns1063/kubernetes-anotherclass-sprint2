@@ -30,7 +30,7 @@ spec:
         version: 1.0.0
     spec:
       nodeSelector:
-        kubernetes.io/hostname: k8s-master
+        kubernetes.io/hostname: jhlee-worker-1
       containers:
         - name: api-tester-2121
           image: wogns1063/api-tester:v1.0.0
