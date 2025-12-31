@@ -33,8 +33,43 @@ spec:
         kubernetes.io/hostname: jh-mater
       containers:
         - name: api-tester-1
-          image: wogns1063/app-v1
+          image: 1pro/api-tester:v1.0.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
               name: http
+          envFrom:
+            - configMapRef:
+                name: api-tester-properties
+          startupProbe:
+            httpGet:
+              path: "/startup"
+              port: 8080
+            periodSeconds: 5
+            failureThreshold: 24
+          readinessProbe:
+            httpGet:
+              path: "/readiness"
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: "/liveness"
+              port: 8080
+            periodSeconds: 10
+            failureThreshold: 3
+          resources:
+            requests:
+              memory: "100Mi"
+              cpu: "100m"
+            limits:
+              memory: "200Mi"
+              cpu: "200m"
+          volumeMounts:
+            - name: secret-datasource
+              mountPath: /usr/src/myapp/datasource
+      volumes:
+        - name: secret-datasource
+          secret:
+            secretName: api-tester-postgresql
